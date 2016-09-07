@@ -25,13 +25,18 @@
 # Non-bash package requirements - below is for Debian-based systems
 # coreutils for basename, dirname
 
-## Check that the script is called in the apps directory
+# Setup some useful vars
 WKDIR=`pwd`
 SUBDIR=`basename $WKDIR`
 REPOBASE=`dirname $WKDIR`
 
 usage() {
-	echo "Duh, use it the right way"
+	echo ""
+	echo ' ../../scripts/new-package [name of app to package]'
+	echo ""
+	echo " where [name of app to package] is the thing you want to package"
+	echo " e.g. ../../scripts/new-package taskwarrior"
+	echo ""
 }
 
 setup-app-dir() {
@@ -43,7 +48,8 @@ setup-app-dir() {
 	# Make sure the directory for the package doesn't already exist
 	if [ -d "$FP" ]
 	then
-	  echo -e "\nDirectory already exists for $PKG\n"
+	  echo -e "\nERROR: sDirectory already exists for $PKG\n"
+	  echo -e "Exiting...\n"
 	  exit 1
 	fi
 	# Create needed dirs
@@ -130,9 +136,11 @@ then
 else
   echo "ERROR: Both .deb and .rpm were not created.  Package files left if the current directory"
 fi'  > "$FP/make-$PKG-packages" 
+	echo 'Add any references needed to help build and package this app' > "$FP/references/todo.md" 
 	echo -e "\nThe app $PKG is ready for packaging at $FP\n\nGo forth and conquer\n"
 }
 
+# Check that the script is called in the apps directory
 if [ "$SUBDIR" = "apps" ]
 then
   # Make sure the 'right' directories are in the parent
@@ -154,7 +162,8 @@ else
 fi
 
 # Check that we only have a single argument
-if [ $# -gt 1 ] 
+if [ $# -eq 0 ] ||
+   [ $# -gt 1 ] 
 then
   echo -e "\nERROR: This script only accepts a single argument\n"
   usage
