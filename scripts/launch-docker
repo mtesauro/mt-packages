@@ -1,0 +1,5 @@
+#!/bin/bash
+
+## Create a script that take arguements of build or fpm that
+## launches either a build docker or the FPM docker
+
