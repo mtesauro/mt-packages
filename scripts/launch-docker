@@ -4,7 +4,7 @@
 # launches either a build docker or the FPM docker
 # This allows your build machine to keep free of build cruft
 
-# Assumes BASH 4.0+
+# Assumes BASH 4.0+ 
 # Non-bash package requirements - below is for Debian-based systems
 # coreutils for basename, dirname
 
@@ -109,6 +109,22 @@ case $CLEANUP in
       echo "  docker rm $TYPE-$SUBDIR";
       echo "Exiting...";
       exit 1;;
+esac
+
+## Ask to correct file premissions from Docker work as root
+echo "Files created in the Docker image will be owned by root."
+echo -n "Do you want to change ownership to your user? [y/n]: "
+read CHOWN
+
+case $CHOWN in 
+  y|Y|Yes|yes ) 
+      echo "";
+      echo "Resetting file ownership to $USER";
+      sudo chown -R $USER $WKDIR
+      echo "";;
+  * ) 
+      echo -e "\nFile permissions left as owned by root.";
+      echo "";;
 esac
 
 echo "All done - go have a cookie"

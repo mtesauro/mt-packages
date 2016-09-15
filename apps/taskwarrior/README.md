@@ -1,8 +1,9 @@
-[Put a short description of what this app is that you're packaging]
+Taskwarrior is Free and Open Source Software that manages your TODO list from the command line. It is flexible, fast, and unobtrusive. It does its job then gets out of your way.
 
-More info at [Link to the app's website/webpage]
+More info at https://taskwarrior.org/
 
-Apps repository is at [Link to apps repository]
+Apps repository is at https://git.tasktools.org/projects/TM/repos/task/browse
 
-Download at [Link to the app's download page]
+Download at https://taskwarrior.org/download/
 
+How to build docs: https://taskwarrior.org/docs/build.html

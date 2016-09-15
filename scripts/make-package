@@ -22,9 +22,14 @@ fi
 echo "Building packages for $TOOLNAME version $VERSION"
 
 # Handle when there are separate builds for different architectures
-if [ "$AMD64" = true ] ; then
-  echo "Building for 64-bit systems"
-  DIR="pkg-root-64"
+if [ "$i386" = true ] ; then
+  echo "Building for 32-bit systems"
+  DIR="pkg-root-32"
+  echo "Add some code first to switch to a 32-bit docker image"
+  echo "After I test that out to make sure it works"
+  echo "So for now, exit here"
+  echo "32-bit support not added yet, sorry"
+  exit 1
 fi
 
 echo "Building .deb"

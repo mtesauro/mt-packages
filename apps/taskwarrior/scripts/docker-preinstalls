@@ -2,5 +2,7 @@
 
 # These are packages that are needed in the build Docker beyond the base image
 
+# Target version = Ubuntu 16.04 LTS
+
 apt-get update
-apt-get install wget vim
+apt-get -y install wget vim libgnutls-dev uuid-dev cmake g++

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Get the base directory from the calling script
+BASE="$1"
+
+# Set root directory for packaging purposes 
+ROOT="$BASE/pkg-root"
+
+# Create tests to verify binary as needed
+$ROOT/usr/local/bin/task version
+
+$ROOT/usr/local/bin/task diagnostics
+
+# More stuff here if needed in future

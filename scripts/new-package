@@ -134,7 +134,7 @@ elif [ $COUNT -gt 2 ]
 then
   echo "ERROR: Something wonky happened.  It appears that more then just .deb and .rpms were created"
 else
-  echo "ERROR: Both .deb and .rpm were not created.  Package files left if the current directory"
+  echo "ERROR: Both .deb and .rpm were not created.  Any package files created were left in the current directory."
 fi'  > "$FP/make-$PKG-packages" 
 	echo 'Add any references needed to help build and package this app' > "$FP/references/todo.md" 
 	echo -e "\nThe app $PKG is ready for packaging at $FP\n\nGo forth and conquer\n"

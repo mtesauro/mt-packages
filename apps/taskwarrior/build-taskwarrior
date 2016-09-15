@@ -1,6 +1,92 @@
 #!/bin/bash
 
-# Bash script used to build the app from source in a build docker
+# Bash script used to build taskwarrior from source in a build docker
 
 # Create this the first time you make the package and store it here for reuse later.
 
+# Make sure this is run from the same directory it is located in
+cd "$(dirname "$0")"
+BASE=`pwd`
+
+# Do the necessary installs to get a build environment
+echo "Creating the build environment"
+source ./scripts/docker-preinstalls
+
+# Download, verify and then extract the source
+echo "Downloading and extracting source"
+source ./scripts/source-download-and-check $BASE
+
+# Return to where the script is
+cd $BASE
+
+# Build taskwarrior
+SRC=`cat $BASE/source/dir-name`
+cd $SRC
+cmake -DCMAKE_BUILD_TYPE=release .
+make
+find / > ../pre-install
+make install
+find / > ../post-install
+cd ..
+
+# Figure out what files were added during the install
+diff pre-install post-install | grep -v "/proc" | egrep "^>" | sed 's/> //' | sed '/\/opt\/taskwarrior/d' > "$BASE/source/installed-file-list"
+
+# Clean up pre and post build files and the extracted source
+rm $BASE/source/pre-install $BASE/source/post-install
+rm -rf $SRC
+
+# Iterate through installed-file-list moving build artifacts to the packaging root
+
+# Set destination path
+DST="$BASE/pkg-root"
+
+# Iterate through the list of build artifacts
+while read P; do
+  # Set the new path
+  NP="$DST$P"
+
+  # Check if current path is a dir
+  if [ -d $P ]
+  then
+    # If yes, create destination directory if it doesn't exist
+    if [ ! -d $NP ]
+    then
+      mkdir -p $NP
+    fi
+  fi
+  
+  # Check if the current path is file
+  if [ -f $P ]
+  then
+    # Set the base directory for this file
+    BD=`dirname $NP`
+    if [ ! -d $BD ]
+    then
+      mkdir -p $BD
+    fi
+    
+    # Copy the file to its new home
+    if [ ! -f $NP ]
+    then
+      cp -a $P $NP
+    else
+      echo -e "\nERROR: Bad mojo just happened - the file already exists in pkg-root"
+      echo " which should not happen.  Exiting so you can debug what happened"
+      exit 1
+    fi
+  fi
+done < "$BASE/source/installed-file-list"
+
+# TODO add a prompt for running the tests - maybe?
+
+# Leave a stub for build tests
+if [ -e "$BASE/scripts/test-build" ]
+then
+  echo "Running build test script..."
+  source "$BASE/scripts/test-build" $BASE
+fi
+
+echo ""
+echo "Building Taskwarrior complete - have fun!" 
+echo ""
